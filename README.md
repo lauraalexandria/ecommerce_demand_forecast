@@ -1,9 +1,10 @@
 # ecommerce_demand_forecast
 
 ## Tools used
-Conda
-Pylint
-pre-commit — pre-commit hooks
+
+* Conda
+* Pylint
+* pre-commit — pre-commit hooks
 
 ## To use the project
 

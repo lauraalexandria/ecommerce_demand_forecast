@@ -18,4 +18,8 @@ jobs:
           pylint **/*.py --exit-zero
       - name: Run Black Check
         run: |
-          black --check **/*.py
+          if ls **/*.py 1> /dev/null 2>&1; then
+            black --check **/*.py
+          else
+            echo "Nenhum arquivo .py encontrado. Pulando Black."
+          fi
