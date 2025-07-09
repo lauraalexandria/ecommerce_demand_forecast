@@ -61,3 +61,11 @@ Add historical tendencies from existence features.
 ```
 python project/feature_engineering.py
 ```
+
+### In case of change scripts
+
+It is necessary to run black command before the commits
+
+´´´
+black .
+´´´
