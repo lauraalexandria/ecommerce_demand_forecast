@@ -21,3 +21,6 @@ catboost
 pre-commit>=3.0.0
 pylint>=3.0.0
 black>=23.0.0
+kaggle
+python-dotenv
+pytrends
