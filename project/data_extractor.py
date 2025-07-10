@@ -4,6 +4,7 @@ from pathlib import Path
 
 # import pandas as pd
 
+
 # Create .kaggle directory
 kaggle_dir = Path.home() / ".kaggle"
 kaggle_dir.mkdir(exist_ok=True)
