@@ -16,6 +16,8 @@ jobs:
       - name: Run Pylint
         run: |
           pylint **/*.py --exit-zero
+      - name: Install Black
+        run: pip install black==25.1.0
       - name: Run Black Check
         run: |
           if ls **/*.py 1> /dev/null 2>&1; then
