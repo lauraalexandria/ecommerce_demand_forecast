@@ -21,7 +21,7 @@ jobs:
       - name: Run Black Check
         run: |
           if ls **/*.py 1> /dev/null 2>&1; then
-            black --check **/*.py
+            black --check --line-length=78 **/*.py
           else
             echo "Nenhum arquivo .py encontrado. Pulando Black."
           fi
