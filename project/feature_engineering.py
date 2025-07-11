@@ -28,9 +28,9 @@ if __name__ == "__main__":
     selected_feat_list = [
         "flag_approved_order_mean",
         "daytime_in_minutes_mean",
-        "quantidade_mean",
-        "quantidade_sum",
-        "valor_total_sum",
+        "sales_amount_mean",
+        "sales_amount_sum",
+        "sales_value_sum",
         "frete_total_mean",
         "product_weight_g_mean",
         "flag_approved_order_mean",
@@ -38,7 +38,7 @@ if __name__ == "__main__":
         "flag_new_client_mean",
         "flag_new_client_mean_national",
         "daytime_in_minutes_mean_national",
-        "quantidade_mean_national",
+        "sales_amount_mean_national",
         "frete_total_mean_national",
         "product_weight_g_mean_national",
     ]

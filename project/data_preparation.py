@@ -53,8 +53,8 @@ def aggregate_cols_by_dates(df, key_cols_list):
             "flag_approved_order": "mean",
             "flag_new_client": "mean",
             "daytime_in_minutes": ["mean", "median", "min", "max"],
-            "quantidade": ["sum", "mean", "median", "min", "max"],
-            "valor_total": ["sum", "mean", "median", "min", "max"],
+            "sales_amount": ["sum", "mean", "median", "min", "max"],
+            "sales_value": ["sum", "mean", "median", "min", "max"],
             "frete_total": ["mean", "median", "min", "max"],
             "product_weight_g": ["mean", "median"],
         }
@@ -88,16 +88,16 @@ def avoid_gap_dates(df, date_col, key_cols_list):
 
     return df.merge(dates_df, how="right").fillna(
         value={
-            "quantidade_sum": 0,
-            "quantidade_mean": 0,
-            "quantidade_median": 0,
-            "quantidade_min": 0,
-            "quantidade_max": 0,
-            "valor_total_sum": 0,
-            "valor_total_mean": 0,
-            "valor_total_median": 0,
-            "valor_total_min": 0,
-            "valor_total_max": 0,
+            "sales_amount_sum": 0,
+            "sales_amount_mean": 0,
+            "sales_amount_median": 0,
+            "sales_amount_min": 0,
+            "sales_amount_max": 0,
+            "sales_value_sum": 0,
+            "sales_value_mean": 0,
+            "sales_value_median": 0,
+            "sales_value_min": 0,
+            "sales_value_max": 0,
         }
     )
 
@@ -112,8 +112,8 @@ if __name__ == "__main__":
     order_items_df = (
         order_items_df.groupby(["order_id", "product_id"])
         .agg(
-            quantidade=("price", "count"),
-            valor_total=("price", "sum"),
+            sales_amount=("price", "count"),
+            sales_value=("price", "sum"),
             frete_total=("freight_value", "sum"),
         )
         .reset_index()

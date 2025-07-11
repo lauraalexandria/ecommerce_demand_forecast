@@ -12,7 +12,7 @@ import pandas as pd
 )
 @click.option(
     "--target-col-source",
-    default="quantidade_sum",
+    default="sales_amount_sum",
     help="Column name used as the future target",
 )
 @click.option(

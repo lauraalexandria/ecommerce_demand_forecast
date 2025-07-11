@@ -67,7 +67,7 @@ python project/feature_engineering.py
 4. Target creation and train/test split
 
 ```
-python project/temporal_target_and_split.py --input-path="./data/processed/model_data.csv" --target-col-source="quantidade_sum" --horizon=1 --split-data="2018-05-01"
+python project/temporal_target_and_split.py --input-path="./data/processed/model_data.csv" --target-col-source="sales_amount_sum" --horizon=1 --split-data="2018-05-01"
 ```
 5. Optimization
 
