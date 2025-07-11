@@ -5,7 +5,8 @@ disable =
     missing-docstring,
     too-few-public-methods,
     import-error,
-    wrong-import-position
+    wrong-import-position,
+    no-value-for-parameter
 [MESSAGES CONTROL]
 disable =
     C0114,  # missing-module-docstring

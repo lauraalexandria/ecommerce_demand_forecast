@@ -24,3 +24,5 @@ black>=23.0.0
 kaggle
 python-dotenv
 pytrends
+click
+hyperopt

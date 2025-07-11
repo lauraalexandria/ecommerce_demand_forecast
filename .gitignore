@@ -209,3 +209,8 @@ __marimo__/
 # data
 *.csv
 *.parquet
+*.tsv
+*.db
+
+# models
+catboost_info/

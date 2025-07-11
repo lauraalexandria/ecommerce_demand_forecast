@@ -8,6 +8,8 @@
 * Pylint
 * pre-commit — pre-commit hooks
 * KaggleAPI
+* GitHub Actions?
+* MLFlow
 
 ## To use the project
 
@@ -60,6 +62,23 @@ Add historical tendencies from existence features.
 
 ```
 python project/feature_engineering.py
+```
+
+4. Target creation and train/test split
+
+```
+python project/temporal_target_and_split.py --input-path="./data/processed/model_data.csv" --target-col-source="quantidade_sum" --horizon=1 --split-data="2018-05-01"
+```
+5. Optimization
+
+```
+python project/catboost_optimization.py
+```
+
+5. Final model
+
+```
+python project/catboost_model.py
 ```
 
 ### In case of change scripts
