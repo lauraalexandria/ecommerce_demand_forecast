@@ -214,3 +214,5 @@ __marimo__/
 
 # models
 catboost_info/
+mlruns/*
+final_model/

@@ -1,0 +1,24 @@
+# === CONFIGS ===
+DOCKER = docker
+IMAGE_NAME = project # app
+TAG = latest
+PORT = 5000
+
+# === COMANDS ===
+build:
+    $(DOCKER) build -t $(IMAGE_NAME):$(TAG) .
+
+run:
+    docker run -p $(PORT):$(PORT) $(IMAGE_NAME):$(TAG)
+
+test:
+    docker run $(IMAGE_NAME):$(TAG) python -m pytest
+
+push:
+    docker push $(IMAGE_NAME):$(TAG)
+
+clean:
+    docker stop $$(docker ps -aq) || true
+    docker rm $$(docker ps -aq) || true
+
+deploy: clean build run

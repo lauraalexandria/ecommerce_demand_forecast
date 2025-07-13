@@ -37,6 +37,8 @@ def run_optimization(source_path: str, num_trials: int):
     cat_cols = list(x_train.select_dtypes("object").columns)
 
     def objective(params):
+
+        mlflow.autolog()
         with mlflow.start_run():
 
             # print("Fit model")
@@ -45,6 +47,8 @@ def run_optimization(source_path: str, num_trials: int):
                 random_seed=56, cat_features=cat_cols, verbose=0
             )
             model.fit(x_train, y_train)
+
+            mlflow.catboost.log_model(model, "model")
             # print("Predict values")
             y_pred = model.predict(x_val).round()
 
