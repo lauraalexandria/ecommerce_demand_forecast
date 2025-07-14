@@ -48,4 +48,8 @@ tune: # $(PROCESSED_DATA)
 final-model:
 	$(PYTHON) project/select_and_register_model.py
 
+## Monitor
+monitor:
+	$(PYTHON) project/monitor.py
+
 all-model-steps: extract-data prepare-data feat-eng target-split tune final-model

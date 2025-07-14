@@ -12,6 +12,9 @@
 * MLFlow
 * Makefile
 * Docker
+* EvidentlyAI
+* Pytest
+
 
 ## To use the project
 
@@ -57,6 +60,12 @@ And change the default values to your needs. The Kaggle credentials can be view 
 ```
 make -f Makefile.model all-model-steps
 ```
+
+7. Monitor model
+```
+make -f Makefile.model monitor
+```
+
 ### Deploy in Docker
 
 1. Build image
@@ -80,6 +89,7 @@ black .
 
 ### Analyze MLFlow
 
+Experiment in ´ecommerce_forecast´ contains model runs and ´ecommerce_forecast_reports´ contains evidently reports.
 ```
 mlflow server --backend-store-uri sqlite:///mlflow.db
 ```
