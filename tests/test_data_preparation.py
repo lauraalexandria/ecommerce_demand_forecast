@@ -22,7 +22,7 @@ def test_prepare_data():
         "daytime_in_minutes",
         "sales_amount",
         "sales_value",
-        "frete_total",
+        "freight",
         "product_weight_g",
     ]
     df = pd.DataFrame(data, columns=columns)
@@ -48,10 +48,10 @@ def test_prepare_data():
         "sales_value_median",
         "sales_value_min",
         "sales_value_max",
-        "frete_total_mean",
-        "frete_total_median",
-        "frete_total_min",
-        "frete_total_max",
+        "freight_mean",
+        "freight_median",
+        "freight_min",
+        "freight_max",
         "product_weight_g_mean",
         "product_weight_g_median",
     ]

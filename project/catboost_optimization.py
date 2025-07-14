@@ -41,7 +41,6 @@ def run_optimization(source_path: str, num_trials: int):
         mlflow.autolog()
         with mlflow.start_run():
 
-            # print("Fit model")
             mlflow.log_params(params)
             model = CatBoostRegressor(
                 random_seed=56, cat_features=cat_cols, verbose=0
@@ -49,10 +48,8 @@ def run_optimization(source_path: str, num_trials: int):
             model.fit(x_train, y_train)
 
             mlflow.catboost.log_model(model, "model")
-            # print("Predict values")
             y_pred = model.predict(x_val).round()
 
-            # print("Calculate metrics")
             y_val.dropna(inplace=True)
             y_pred = y_pred[: len(y_val)]
             rmse = np.sqrt(mean_squared_error(y_val, y_pred))
@@ -71,7 +68,7 @@ def run_optimization(source_path: str, num_trials: int):
         "random_state": 42,
     }
 
-    rstate = np.random.default_rng(42)  # for reproducible results
+    rstate = np.random.default_rng(42)
     fmin(
         fn=objective,
         space=search_space,

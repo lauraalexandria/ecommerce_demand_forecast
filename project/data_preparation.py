@@ -55,7 +55,7 @@ def aggregate_cols_by_dates(df, key_cols_list):
             "daytime_in_minutes": ["mean", "median", "min", "max"],
             "sales_amount": ["sum", "mean", "median", "min", "max"],
             "sales_value": ["sum", "mean", "median", "min", "max"],
-            "frete_total": ["mean", "median", "min", "max"],
+            "freight": ["mean", "median", "min", "max"],
             "product_weight_g": ["mean", "median"],
         }
     )
@@ -114,7 +114,7 @@ if __name__ == "__main__":
         .agg(
             sales_amount=("price", "count"),
             sales_value=("price", "sum"),
-            frete_total=("freight_value", "sum"),
+            freight=("freight_value", "sum"),
         )
         .reset_index()
     )

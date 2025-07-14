@@ -31,7 +31,7 @@ if __name__ == "__main__":
         "sales_amount_mean",
         "sales_amount_sum",
         "sales_value_sum",
-        "frete_total_mean",
+        "freight_mean",
         "product_weight_g_mean",
         "flag_approved_order_mean",
         "flag_approved_order_mean_national",
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         "flag_new_client_mean_national",
         "daytime_in_minutes_mean_national",
         "sales_amount_mean_national",
-        "frete_total_mean_national",
+        "freight_mean_national",
         "product_weight_g_mean_national",
     ]
 
