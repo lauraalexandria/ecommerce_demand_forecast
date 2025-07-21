@@ -6,11 +6,11 @@ The goal of this project is to develop and build a MLOps pipeline to build and d
 
 The project includes:
 
-**Data Extraction**: Downloding data from source.
-**Data preparation**: Data cleansing, transformation, and feature engineering.
-**Modeling**: Development and training of forecasting models.
-**Evaluation**: Performance analysis and validation of results.
-**Deployment**: Model deployment using Docker.
+- **Data Extraction**: Downloding data from source.
+- **Data preparation**: Data cleansing, transformation, and feature engineering.
+- **Modeling**: Development and training of forecasting models.
+- **Evaluation**: Performance analysis and validation of results.
+- **Deployment**: Model deployment using Docker.
 
 ## Tools used
 
@@ -74,7 +74,12 @@ The project includes:
 make -f Makefile.model setup
 ```
 
-2. Install dependencies and pre-commit
+2. Activate enviroment
+```
+conda activate ecommerce-env
+```
+
+3. Install dependencies and pre-commit
 ```
 make -f Makefile.model install
 ```
@@ -133,6 +138,11 @@ docker build -t ecommerce_forecast:latest .
 2. Run model in a container
 ```
 docker run -p 8080:8080 ecommerce_forecast:latest
+```
+
+### Deativate enviroment
+```
+conda deactivate
 ```
 
 ## To-do list (next improvements)

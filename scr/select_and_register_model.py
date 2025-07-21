@@ -1,4 +1,11 @@
 import mlflow
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    filename='app.log',
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 EXPERIMENT_NAME = "ecommerce_forecast"
 mlflow.set_tracking_uri("sqlite:///mlflow.db")
@@ -7,7 +14,7 @@ client = mlflow.MlflowClient()
 
 def load_best_model():
 
-    print("Load best model")
+    logging.info("Load best model")
     experiment_id = client.get_experiment_by_name(
         EXPERIMENT_NAME
     ).experiment_id
@@ -18,7 +25,7 @@ def load_best_model():
     best_run = runs[0]
     best_model_uri = f"runs:/{best_run.info.run_id}/model"
 
-    print(
+    logging.info(
         f"Melhor run_id: {best_run.info.run_id}",
         f"RMSE: {best_run.data.metrics['rmse']}",
     )

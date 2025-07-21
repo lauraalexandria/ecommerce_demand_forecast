@@ -1,5 +1,11 @@
 import pandas as pd
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    filename='app.log',
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 def add_tendency_features(df, feat_list, key_col_list):
     for col in feat_list:
@@ -21,7 +27,7 @@ def add_tendency_features(df, feat_list, key_col_list):
 
 
 if __name__ == "__main__":
-    print("Reading datasets")
+    logging.info("Reading datasets")
     final_df = pd.read_csv("./data/processed/orders_by_week.csv")
     national_df = pd.read_csv("./data/processed/national_orders_by_week.csv")
 
@@ -43,7 +49,7 @@ if __name__ == "__main__":
         "product_weight_g_mean_national",
     ]
 
-    print("Add historical features")
+    logging.info("Add historical features")
     final_df = final_df.sort_values("order_purchase_date")
     final_df = final_df.merge(
         national_df,
@@ -57,5 +63,5 @@ if __name__ == "__main__":
         key_col_list=["product_category_name", "customer_city"],
     )
 
-    print("Write datasets")
+    logging.info("Write datasets")
     final_df.to_csv("./data/processed/model_data.csv", index=False)

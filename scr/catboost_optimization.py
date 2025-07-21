@@ -6,6 +6,13 @@ from catboost import CatBoostRegressor
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.pyll import scope
 from sklearn.metrics import mean_squared_error
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    filename='app.log',
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("ecommerce_forecast")
@@ -25,7 +32,7 @@ mlflow.set_experiment("ecommerce_forecast")
 def run_optimization(source_path: str, num_trials: int):
 
     # pylint: disable=duplicate-code
-    print("Loading datasets")
+    logging.info("Loading datasets")
     x_train = pd.read_csv(f"{source_path}x_train.csv").drop(
         "order_purchase_date", axis=1
     )

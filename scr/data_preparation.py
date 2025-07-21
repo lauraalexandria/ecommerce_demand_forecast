@@ -1,6 +1,12 @@
 import pandas as pd
 from workalendar.america import Brazil
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    filename='app.log',
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 def add_temporal_features(df, date_col):
     df["year"] = df[date_col].dt.year
@@ -73,7 +79,7 @@ def filter_products_and_cities(df, prod_list, cities_list):
 def avoid_gap_dates(df, date_col, key_cols_list):
     start_date = df[date_col].min()
     final_date = df[date_col].max()
-    print(final_date - start_date)
+    logging.info(final_date - start_date)
 
     dates_df = pd.DataFrame(
         {date_col: pd.date_range(start=start_date, end=final_date, freq="D")}
@@ -100,7 +106,7 @@ def avoid_gap_dates(df, date_col, key_cols_list):
 
 
 if __name__ == "__main__":
-    print("Reading datasets")
+    logging.info("Reading datasets")
     orders_df = pd.read_csv("./data/raw/olist_orders_dataset.csv")
     order_items_df = pd.read_csv("./data/raw/olist_order_items_dataset.csv")
     products_df = pd.read_csv("./data/raw/olist_products_dataset.csv")
@@ -116,14 +122,14 @@ if __name__ == "__main__":
         .reset_index()
     )
 
-    print("Join initial datasets")
+    logging.info("Join initial datasets")
     joined_df = (
         orders_df.merge(order_items_df, how="left", on=["order_id"])
         .merge(products_df, how="left", on=["product_id"])
         .merge(customers_df, how="left", on=["customer_id"])
     )
 
-    print("Improve date features")
+    logging.info("Improve date features")
     joined_df["order_purchase_timestamp"] = pd.to_datetime(
         joined_df["order_purchase_timestamp"]
     )
@@ -145,7 +151,7 @@ if __name__ == "__main__":
     )
     joined_df = joined_df.sort_values("order_purchase_original_date")
 
-    print("Filter dataset")
+    logging.info("Filter dataset")
     selected_prod_list = [
         "cama_mesa_banho",
         "beleza_saude",
@@ -160,7 +166,7 @@ if __name__ == "__main__":
         & (joined_df["order_purchase_month"] <= pd.to_datetime("2018-08-01"))
     ]
 
-    print("Add new features")
+    logging.info("Add new features")
     joined_df["flag_approved_order"] = (
         ~joined_df["order_status"].isin(["unavailable", "canceled"])
     ).astype(int)
@@ -179,7 +185,7 @@ if __name__ == "__main__":
         ],
     )
 
-    print("Aggregate dataset weekly")
+    logging.info("Aggregate dataset weekly")
     national_df = aggregate_cols_by_dates(
         joined_df, ["order_purchase_date", "product_category_name"]
     )
@@ -203,7 +209,7 @@ if __name__ == "__main__":
         ],
     )
 
-    print("Write datasets")
+    logging.info("Write datasets")
     national_df.to_csv(
         "./data/processed/national_orders_by_week.csv", index=False
     )
