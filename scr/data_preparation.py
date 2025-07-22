@@ -1,12 +1,14 @@
+import logging
+
 import pandas as pd
 from workalendar.america import Brazil
-import logging
 
 logging.basicConfig(
     level=logging.INFO,
-    filename='app.log',
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    filename="app.log",
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
+
 
 def add_temporal_features(df, date_col):
     df["year"] = df[date_col].dt.year

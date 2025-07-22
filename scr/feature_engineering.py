@@ -1,11 +1,13 @@
-import pandas as pd
 import logging
+
+import pandas as pd
 
 logging.basicConfig(
     level=logging.INFO,
-    filename='app.log',
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    filename="app.log",
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
+
 
 def add_tendency_features(df, feat_list, key_col_list):
     for col in feat_list:

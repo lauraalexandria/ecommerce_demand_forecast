@@ -1,3 +1,5 @@
+import logging
+
 import click
 import mlflow
 import numpy as np
@@ -6,12 +8,11 @@ from catboost import CatBoostRegressor
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.pyll import scope
 from sklearn.metrics import mean_squared_error
-import logging
 
 logging.basicConfig(
     level=logging.INFO,
-    filename='app.log',
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    filename="app.log",
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
 mlflow.set_tracking_uri("sqlite:///mlflow.db")

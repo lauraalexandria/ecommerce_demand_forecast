@@ -1,10 +1,11 @@
-import mlflow
 import logging
+
+import mlflow
 
 logging.basicConfig(
     level=logging.INFO,
-    filename='app.log',
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    filename="app.log",
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
 EXPERIMENT_NAME = "ecommerce_forecast"
@@ -26,8 +27,9 @@ def load_best_model():
     best_model_uri = f"runs:/{best_run.info.run_id}/model"
 
     logging.info(
-        f"Melhor run_id: {best_run.info.run_id}",
-        f"RMSE: {best_run.data.metrics['rmse']}",
+        "Melhor run_id: %s, RMSE: %s",
+        best_run.info.run_id,
+        best_run.data.metrics["rmse"],
     )
 
     mlflow.artifacts.download_artifacts(
