@@ -11,7 +11,7 @@ SPLIT_DATE = "2018-05-01"
 # === COMANDS ===
 ## Create virtual environment
 setup:
-	conda create -n $(VENV_NAME) python=3.10 -y
+	conda create -n $(VENV_NAME) python=3.10 -y && conda init
 	@echo "Active environment: conda activate $(VENV_NAME)"
 
 ## Install dependencies
@@ -21,35 +21,35 @@ install:
 
 ## Extract Data
 extract-data:
-	$(PYTHON) project/data_extractor.py
+	$(PYTHON) scr/data_extractor.py
 
 ## Data Preparation
 prepare-data: # $(RAW_DATA)
-	$(PYTHON) project/data_preparation.py
+	$(PYTHON) scr/data_preparation.py
 
 ## Feature Engineering
 feat-eng: # $(RAW_DATA)
-	$(PYTHON) project/feature_engineering.py
+	$(PYTHON) scr/feature_engineering.py
 
 ## Create target ans split data
 target-split: # $(RAW_DATA)
-	$(PYTHON) project/temporal_target_and_split.py --input-path $(PROCESSED_DATA) --target-col-source $(TARGET_COL_SOURCE) --horizon $(HORIZON) --split-data $(SPLIT_DATE)
+	$(PYTHON) scr/temporal_target_and_split.py --input-path $(PROCESSED_DATA) --target-col-source $(TARGET_COL_SOURCE) --horizon $(HORIZON) --split-data $(SPLIT_DATE)
 
 ## Model tuning
 tune: # $(PROCESSED_DATA)
-	$(PYTHON) project/catboost_optimization.py
+	$(PYTHON) scr/catboost_optimization.py
 
 ## Final model
 #eda:
-#	$(PYTHON) project/eda.py --data $(PROCESSED_DATA)
+#	$(PYTHON) scr/eda.py --data $(PROCESSED_DATA)
 #	jupyter nbconvert notebooks/eda.ipynb --to html
 
 ## Final model
 final-model:
-	$(PYTHON) project/select_and_register_model.py
+	$(PYTHON) scr/select_and_register_model.py
 
 ## Monitor
 monitor:
-	$(PYTHON) project/monitor.py
+	$(PYTHON) scr/monitor.py
 
 all-model-steps: extract-data prepare-data feat-eng target-split tune final-model

@@ -44,7 +44,7 @@ The project includes:
 ├── notebooks/                     # Jupyter notebooks for exploration
 │   └── initial_attempt.ipynb      # Initial EDA, prototyping, or experimentation
 │
-├── project/                       # Main Python source code
+├── scr/                           # Main Python source code
 │   ├── __init__.py                # Marks the directory as a Python package
 │   ├── catboost_optimization.py   # Hyperparameter tuning for CatBoost models and MLflow registration
 │   ├── data_extractor.py          # Data fetching/loading logic
@@ -67,6 +67,11 @@ The project includes:
 
 ## How to execute locally
 
+### Requirements
+
+Makefile
+Conda
+
 ### Setup project with Makefile
 
 1. Create and activate enviroment
@@ -76,7 +81,7 @@ make -f Makefile.model setup
 
 2. Activate enviroment
 ```
-conda activate ecommerce-env
+source ~/.bashrc && conda activate ecommerce-env
 ```
 
 3. Install dependencies and pre-commit
