@@ -23,6 +23,7 @@ The project includes:
 * Makefile - Plan to create and manage the project
 * Docker - Containerization
 * EvidentlyAI - ML observability framework
+* FastAPI
 * Pytest - Test framework
 
 ## Projet Struture
@@ -34,18 +35,14 @@ The project includes:
 ├── Makefile.prod                  # Makefile for production deployment (Docker, CI/CD)
 ├── README.md                      # Project documentation (goals, setup, usage, ...)
 │
-├── data/                          # Data storage
-│   ├── processed/                 # Processed/cleaned data (feature-engineered)
-│   └── raw/                       # Raw input data (original datasets)
-│
+├── data/                          # Data storage (raw/processed)
 ├── final_model/                   # Exported final model files (e.g., for deployment)
 ├── mlflow.db                      # SQLite database for MLflow tracking (experiments, runs)
 │
-├── notebooks/                     # Jupyter notebooks for exploration
-│   └── initial_attempt.ipynb      # Initial EDA, prototyping, or experimentation
-│
+├── notebooks/                     # Jupyter notebooks for EDA, prototyping, or experimentation
 ├── scr/                           # Main Python source code
 │   ├── __init__.py                # Marks the directory as a Python package
+│   ├── api.py
 │   ├── catboost_optimization.py   # Hyperparameter tuning for CatBoost models and MLflow registration
 │   ├── data_extractor.py          # Data fetching/loading logic
 │   ├── data_preparation.py        # Data cleaning and preprocessing
@@ -69,8 +66,9 @@ The project includes:
 
 ### Requirements
 
-Makefile
-Conda
+- Makefile
+- Conda
+- Docker
 
 ### Setup project with Makefile
 
@@ -144,6 +142,13 @@ docker build -t ecommerce_forecast:latest .
 ```
 docker run -p 8080:8080 ecommerce_forecast:latest
 ```
+
+### Acess Points
+
+| Service         | URL                       | Credentials     |
+|-----------------|---------------------------|-----------------|
+| MLflow UI       | http://localhost:5000     | -               |
+| FastAPI         | http://localhost:8000     | -               |
 
 ### Deativate enviroment
 ```

@@ -32,7 +32,6 @@ mlflow.set_experiment("ecommerce_forecast")
 )
 def run_optimization(source_path: str, num_trials: int):
 
-    # pylint: disable=duplicate-code
     logging.info("Loading datasets")
     x_train = pd.read_csv(f"{source_path}x_train.csv").drop(
         "order_purchase_date", axis=1

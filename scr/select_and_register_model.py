@@ -27,7 +27,7 @@ def load_best_model():
     best_model_uri = f"runs:/{best_run.info.run_id}/model"
 
     logging.info(
-        "Melhor run_id: %s, RMSE: %s",
+        "Best run_id: %s, RMSE: %s",
         best_run.info.run_id,
         best_run.data.metrics["rmse"],
     )

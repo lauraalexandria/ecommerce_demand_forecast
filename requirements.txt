@@ -263,3 +263,4 @@ widgetsnbextension==4.0.14
 workalendar==17.0.0
 xgboost==2.1.4
 zipp==3.23.0
+fastapi==0.116.0
