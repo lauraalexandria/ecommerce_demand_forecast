@@ -37,6 +37,13 @@ def load_best_model():
         dst_path="final_model",
     )
 
+    # Registrando no MLFlow, posso apagar a parte de baixar localmente?
+    mlflow.register_model(best_model_uri, "ecommerce_forecast")
+
+    client.transition_model_version_stage(
+        name="ecommerce_forecast", version=1, stage="Production"
+    )
+
 
 if __name__ == "__main__":
     load_best_model()

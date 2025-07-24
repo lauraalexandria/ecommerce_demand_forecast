@@ -1,9 +1,11 @@
 import logging
 
 import click
+import matplotlib.pyplot as plt
 import mlflow
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from catboost import CatBoostRegressor
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.pyll import scope
@@ -17,6 +19,35 @@ logging.basicConfig(
 
 mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("ecommerce_forecast")
+
+
+def create_mape_chart_by_date(forecast_df):
+
+    forecast = forecast_df.copy().sort_values("month_min")
+    forecast["mape"] = np.abs(
+        (forecast_df["actual_value"] - forecast_df["forecast"])
+        / forecast_df["actual_value"]
+    )
+    forecast["historical_mape"] = forecast.groupby(
+        ["product_category_name", "customer_city"]
+    )["mape"].cumsum()
+    forecast["historical_mape"] = forecast["historical_mape"] / (
+        forecast.groupby(
+            ["product_category_name", "customer_city"]
+        ).cumcount()
+        + 1
+    )
+
+    return sns.relplot(
+        data=forecast,
+        x="month_min",
+        y="historical_mape",
+        kind="line",
+        # hue = "method",
+        row="customer_city",
+        col="product_category_name",
+        aspect=3,
+    )
 
 
 @click.command()
@@ -46,7 +77,7 @@ def run_optimization(source_path: str, num_trials: int):
     def objective(params):
 
         mlflow.autolog()
-        with mlflow.start_run():
+        with mlflow.start_run(run_name="catboost_tunning"):
 
             mlflow.log_params(params)
             model = CatBoostRegressor(
@@ -60,9 +91,48 @@ def run_optimization(source_path: str, num_trials: int):
             y_val.dropna(inplace=True)
             y_pred = y_pred[: len(y_val)]
             rmse = np.sqrt(mean_squared_error(y_val, y_pred))
-            # mape = np.mean(np.abs((y_val - y_pred) / y_val)) * 100
+            mape = (
+                np.mean(
+                    np.abs(
+                        (np.array(y_val) - np.array(y_pred)) / np.array(y_val)
+                    )
+                )
+                * 100
+            )
             mlflow.log_metric("rmse", rmse)
-            # mlflow.log_metric("mape", mape)
+            mlflow.log_metric("mape", mape)
+
+            for prod in list(set(x_val["product_category_name"])):
+                y_val_aux = y_val[
+                    x_val[: len(y_val)]["product_category_name"] == prod
+                ]
+                y_pred_aux = y_pred[
+                    x_val[: len(y_val)]["product_category_name"] == prod
+                ]
+                rmse = np.sqrt(mean_squared_error(y_val_aux, y_pred_aux))
+                mlflow.log_metric(f"rmse_{prod}", rmse)
+                mape = (
+                    np.mean(
+                        np.abs(
+                            (np.array(y_val_aux) - np.array(y_pred_aux))
+                            / np.array(y_val_aux)
+                        )
+                    )
+                    * 100
+                )
+                mlflow.log_metric(f"mape_{prod}", mape)
+
+            x_val_aux = x_val[: len(y_val)][
+                ["month_min", "customer_city", "product_category_name"]
+            ]
+            x_val_aux["actual_value"] = y_val
+            x_val_aux["forecast"] = y_pred
+
+            ax = create_mape_chart_by_date(x_val_aux)
+            # pylint: disable=protected-access
+            fig = ax._figure
+            mlflow.log_figure(fig, "historical_mape.png")
+            plt.close(fig)
 
         return {"loss": rmse, "status": STATUS_OK}
 

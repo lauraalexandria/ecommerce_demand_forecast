@@ -1,3 +1,5 @@
+import datetime
+
 import mlflow
 import pandas as pd
 from catboost import CatBoost
@@ -29,5 +31,5 @@ report.save_html("reports/evidently_report.html")
 
 mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("ecommerce_forecast_reports")
-with mlflow.start_run():
+with mlflow.start_run(run_name=f"catboost_report_{datetime.date.today()}"):
     mlflow.log_artifact("reports/evidently_report.html")

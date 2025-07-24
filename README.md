@@ -110,8 +110,10 @@ This single make command includes:
 3. Feature Engineering
    * Add historical tendencies from existence features
 4. Target creation and train/test split
-5. Catboost Optimization and register in MLflow
+5. Catboost Optimization and register in metrics in MLflow (not only general metrics buyt also grouped by the products and by date)
 6. Select the final model based on the RMSE metric and download it
+
+(?) EXPLAIN METRICS? Example in validation!
 
 ```
 make -f Makefile.model all-model-steps
