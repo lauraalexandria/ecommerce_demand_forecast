@@ -85,7 +85,7 @@ def run_optimization(source_path: str, num_trials: int):
             )
             model.fit(x_train, y_train)
 
-            mlflow.catboost.log_model(model, "model")
+            mlflow.catboost.log_model(model, name="model")
             y_pred = model.predict(x_val).round()
 
             y_val.dropna(inplace=True)

@@ -133,6 +133,19 @@ In order to analyze models runs and Evidently report, it is possible to open the
 mlflow server --backend-store-uri sqlite:///mlflow.db
 ```
 
+### FastAPI
+
+Open an API that's possible to include a csv file with the data PROCESSED and returns the predictions values. In `predict-csv` and `Try it out`
+
+``` bash
+uvicorn scr.api_csv:app --reload
+```
+
+With the API open, you can also add the data with bash:
+``` bash
+curl -X POST "http://localhost:8000/predict-csv"   -H "Content-Type: multipart/form-data"   -F "file=@data/processed/x_val.csv"
+```
+
 ### Deploy in Docker
 
 1. Build image
@@ -147,10 +160,10 @@ docker run -p 8080:8080 ecommerce_forecast:latest
 
 ### Acess Points
 
-| Service         | URL                       | Credentials     |
-|-----------------|---------------------------|-----------------|
-| MLflow UI       | http://localhost:5000     | -               |
-| FastAPI         | http://localhost:8000     | -               |
+| Service         | URL                        | Credentials     |
+|-----------------|----------------------------|-----------------|
+| MLflow UI       | http://localhost:5000      | -               |
+| FastAPI         | http://localhost:8000/docs | -               |
 
 ### Deativate enviroment
 ```
