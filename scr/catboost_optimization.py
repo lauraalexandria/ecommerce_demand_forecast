@@ -21,35 +21,73 @@ mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("ecommerce_forecast")
 
 
-def create_mape_chart_by_date(forecast_df):
+def latest_value_forecast(
+    df, group_col, value_col, date_col, days_to_predict
+):
+    """
+    Forecast by replicating the last value for each group
+    Returns DataFrame with forecast dates and group values
+    """
 
-    forecast = forecast_df.copy().sort_values("month_min")
-    forecast["mape"] = np.abs(
-        (forecast_df["actual_value"] - forecast_df["forecast"])
-        / forecast_df["actual_value"]
-    )
-    forecast["historical_mape"] = forecast.groupby(
-        ["product_category_name", "customer_city"]
-    )["mape"].cumsum()
-    forecast["historical_mape"] = forecast["historical_mape"] / (
-        forecast.groupby(
-            ["product_category_name", "customer_city"]
-        ).cumcount()
-        + 1
+    df = df.copy()
+    df[date_col] = df[date_col] + pd.to_timedelta(days_to_predict, unit="D")
+    df["forecast"] = df[value_col]
+    df["method"] = "latest_value_forecast"
+
+    return df[[date_col, *group_col, value_col, "forecast", "method"]]
+
+
+# pylint: disable=too-many-arguments, too-many-positional-arguments
+def moving_average_forecast(
+    df, group_col, value_col, date_col, days_to_predict, window
+):
+    """
+    Forecast using moving average for each group
+    Returns DataFrame with forecast dates and group values
+    """
+
+    df = df.copy()
+    df[date_col] = df[date_col] + pd.to_timedelta(days_to_predict, unit="D")
+    for i in range(window):
+        df[f"lag{i}"] = df.groupby(group_col)[value_col].shift(i)
+
+    lags = [f"lag{i}" for i in range(window)]
+    df["forecast"] = df[lags].mean(axis=1)
+    df["method"] = "ma_forecast"
+
+    return df[[date_col, *group_col, value_col, "forecast", "method"]]
+
+
+def calculate_mape(df):
+    return (df["actual_value"] - df["forecast"]) / df["actual_value"]
+
+
+def create_mape_chart_by_date(df):
+
+    df["mape"] = list(
+        df.groupby(
+            [
+                "order_purchase_date",
+                "product_category_name",
+                "customer_city",
+                "method",
+            ]
+        ).apply(calculate_mape)
     )
 
     return sns.relplot(
-        data=forecast,
-        x="month_min",
-        y="historical_mape",
+        data=df,
+        x="order_purchase_date",  # "month_min",
+        y="mape",  # "historical_mape",
         kind="line",
-        # hue = "method",
+        hue="method",
         row="customer_city",
         col="product_category_name",
-        aspect=3,
+        aspect=1,
     )
 
 
+# pylint: disable=too-many-locals
 @click.command()
 @click.option(
     "--source-path",
@@ -70,6 +108,9 @@ def run_optimization(source_path: str, num_trials: int):
     y_train = pd.read_csv(f"{source_path}y_train.csv")
     x_val = pd.read_csv(f"{source_path}x_val.csv").drop(
         "order_purchase_date", axis=1
+    )
+    dates_val = pd.to_datetime(
+        pd.read_csv(f"{source_path}x_val.csv")["order_purchase_date"]
     )
     y_val = pd.read_csv(f"{source_path}y_val.csv")
     cat_cols = list(x_train.select_dtypes("object").columns)
@@ -122,13 +163,38 @@ def run_optimization(source_path: str, num_trials: int):
                 )
                 mlflow.log_metric(f"mape_{prod}", mape)
 
-            x_val_aux = x_val[: len(y_val)][
-                ["month_min", "customer_city", "product_category_name"]
-            ]
+            target_col = "actual_value"  # f"target_{horizon}_semana"
+            group_col = ["product_category_name", "customer_city"]
+            date_col = "order_purchase_date"
+            days = 7
+            window = 3
+
+            x_val_aux = x_val[: len(y_val)][[*group_col]]
             x_val_aux["actual_value"] = y_val
             x_val_aux["forecast"] = y_pred
+            x_val_aux["order_purchase_date"] = dates_val[
+                : len(y_val)
+            ] + pd.to_timedelta(days, unit="D")
+            x_val_aux["method"] = "forecast"
 
-            ax = create_mape_chart_by_date(x_val_aux)
+            forecast_df = pd.concat(
+                [
+                    latest_value_forecast(
+                        x_val_aux, group_col, target_col, date_col, days
+                    ),
+                    moving_average_forecast(
+                        x_val_aux,
+                        group_col,
+                        target_col,
+                        date_col,
+                        days,
+                        window,
+                    ),
+                    x_val_aux,
+                ]
+            )  # .drop(target_col, axis=1)
+
+            ax = create_mape_chart_by_date(forecast_df)
             # pylint: disable=protected-access
             fig = ax._figure
             mlflow.log_figure(fig, "historical_mape.png")

@@ -2,9 +2,11 @@ import datetime
 
 import mlflow
 import pandas as pd
-from catboost import CatBoost
 from evidently.metric_preset import DataDriftPreset, RegressionPreset
 from evidently.report import Report
+
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
+client = mlflow.MlflowClient()
 
 # Load current and reference data
 current_data = pd.read_csv("./data/processed/x_val.csv").drop(
@@ -12,9 +14,8 @@ current_data = pd.read_csv("./data/processed/x_val.csv").drop(
 )
 
 # Load model
-model = CatBoost()
-model.load_model("final_model/model/model.cb")
-model.set_feature_names(current_data.columns)
+MODEL_URI = "models:/ecommerce_forecast/1"
+model = mlflow.catboost.load_model(MODEL_URI)
 
 # Predictions
 current_data["prediction"] = model.predict(current_data)

@@ -32,12 +32,11 @@ def load_best_model():
         best_run.data.metrics["rmse"],
     )
 
-    mlflow.artifacts.download_artifacts(
-        best_model_uri,
-        dst_path="final_model",
-    )
+    # mlflow.artifacts.download_artifacts(
+    #     best_model_uri,
+    #     dst_path="final_model",
+    # )
 
-    # Registrando no MLFlow, posso apagar a parte de baixar localmente?
     mlflow.register_model(best_model_uri, "ecommerce_forecast")
 
     client.transition_model_version_stage(
