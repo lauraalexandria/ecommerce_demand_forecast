@@ -6,7 +6,7 @@ RAW_DATA = $(DATA_DIR)/raw/dataset.csv
 PROCESSED_DATA = $(DATA_DIR)/processed/model_data.csv
 TARGET_COL_SOURCE = "sales_amount_sum"
 HORIZON = 1
-SPLIT_DATE = "2018-05-01"
+SPLIT_DATE = "2018-05-15"
 
 # === COMANDS ===
 ## Create virtual environment
@@ -37,7 +37,7 @@ target-split: # $(RAW_DATA)
 
 ## Model tuning
 tune: # $(PROCESSED_DATA)
-	$(PYTHON) scr/catboost_optimization.py
+	$(PYTHON) scr/catboost_optimization.py --split-data $(SPLIT_DATE)
 
 ## Final model
 #eda:
@@ -50,6 +50,7 @@ final-model:
 
 ## Monitor
 monitor:
-	$(PYTHON) scr/monitor.py
+	$(PYTHON) scr/monitor.py --current-date $(SPLIT_DATE)
 
-all-model-steps: extract-data prepare-data feat-eng target-split tune final-model
+first-all-model-steps: extract-data prepare-data feat-eng target-split tune final-model
+all-model-steps: extract-data prepare-data feat-eng target-split tune final-model monitor

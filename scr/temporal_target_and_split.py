@@ -1,4 +1,5 @@
 from datetime import timedelta
+from pathlib import Path
 
 import click
 import pandas as pd
@@ -37,19 +38,30 @@ def add_target_and_split_by_product(
         ["product_category_name", "customer_city"]
     )[target_col_source].shift(-horizon)
 
-    split_data = pd.to_datetime("2018-05-01")
-    df_train = df[df["order_purchase_date"] < split_data]
-    df_val = df[df["order_purchase_date"] >= split_data + timedelta(days=7)]
+    # split_data = pd.to_datetime(split_data).date()
+    df_train = df[df["order_purchase_date"] < pd.to_datetime(split_data)]
+    df_val = df[
+        df["order_purchase_date"]
+        >= pd.to_datetime(split_data) + timedelta(days=7)
+    ]
 
     x_train = df_train.drop(f"target_{horizon}_semana", axis=1)
     y_train = df_train[f"target_{horizon}_semana"]
     x_val = df_val.drop(f"target_{horizon}_semana", axis=1)
     y_val = df_val[f"target_{horizon}_semana"]
 
-    x_train.to_csv("./data/processed/x_train.csv", index=False)
-    y_train.to_csv("./data/processed/y_train.csv", index=False)
-    x_val.to_csv("./data/processed/x_val.csv", index=False)
-    y_val.to_csv("./data/processed/y_val.csv", index=False)
+    data_dir = (
+        Path.home()
+        / "ecommerce_demand_forecast"
+        / "data"
+        / "processed"
+        / split_data
+    )
+    data_dir.mkdir(exist_ok=True, mode=0o755)
+    x_train.to_csv(f"./data/processed/{split_data}/x_train.csv", index=False)
+    y_train.to_csv(f"./data/processed/{split_data}/y_train.csv", index=False)
+    x_val.to_csv(f"./data/processed/{split_data}/x_val.csv", index=False)
+    y_val.to_csv(f"./data/processed/{split_data}/y_val.csv", index=False)
 
 
 if __name__ == "__main__":

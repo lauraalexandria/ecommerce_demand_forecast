@@ -95,12 +95,18 @@ def create_mape_chart_by_date(df):
     help="Location where the processed datasets were saved",
 )
 @click.option(
+    "--split-data",
+    default="2018-05-01",
+    help="Split date between train/test datasets. First date in test file",
+)
+@click.option(
     "--num_trials",
     default=15,
     help="The number of parameter evaluations for the optimizer to explore",
 )
-def run_optimization(source_path: str, num_trials: int):
+def run_optimization(source_path: str, split_data: str, num_trials: int):
 
+    source_path = f"{source_path}{split_data}/"
     logging.info("Loading datasets")
     x_train = pd.read_csv(f"{source_path}x_train.csv").drop(
         "order_purchase_date", axis=1
@@ -118,7 +124,7 @@ def run_optimization(source_path: str, num_trials: int):
     def objective(params):
 
         mlflow.autolog()
-        with mlflow.start_run(run_name="catboost_tunning"):
+        with mlflow.start_run(run_name=f"catboost_tunning_{split_data}"):
 
             mlflow.log_params(params)
             model = CatBoostRegressor(
