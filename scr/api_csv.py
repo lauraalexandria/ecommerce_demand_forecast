@@ -2,21 +2,30 @@ from io import BytesIO
 from typing import Optional
 
 import pandas as pd
-from catboost import CatBoost
 from fastapi import FastAPI, HTTPException, UploadFile
+
+import mlflow
+
+mlflow.set_tracking_uri("http://mlflow:5000")
+client = mlflow.MlflowClient()
+print("aqui")
 
 app = FastAPI()
 
-# Load current and reference data
-current_data = pd.read_csv("./data/processed/x_val.csv").drop(
-    "order_purchase_date", axis=1
-)
-features = current_data.columns
+# # Load current and reference data
+# current_data = pd.read_csv("./data/processed/x_val.csv").drop(
+#     "order_purchase_date", axis=1
+# )
+# features = current_data.columns
+
+# # Load model
+# model = CatBoost()
+# model.load_model("final_model/model/model.cb")
+# model.set_feature_names(features)
 
 # Load model
-model = CatBoost()
-model.load_model("final_model/model/model.cb")
-model.set_feature_names(features)
+model = mlflow.pyfunc.load_model("models:/ecommerce_forecast/1")
+print("ou aqui?")
 
 
 @app.post("/predict-csv")

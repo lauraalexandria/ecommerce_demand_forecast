@@ -30,6 +30,7 @@ The project includes:
 
 ```
 .
+├── docker-compose.yaml            #
 ├── Dockerfile                     # Configuration file for building the Docker container
 ├── Makefile.model                 # Makefile for model-related commands (enviroment, training, evaluation, ...)
 ├── Makefile.prod                  # Makefile for production deployment (Docker, CI/CD)

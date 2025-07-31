@@ -1,0 +1,53 @@
+volumes:
+  mlflow_db: {}
+
+networks:
+  front-tier:
+  back-tier:
+
+services:
+
+  # mlflow:
+  #   image: ghcr.io/mlflow/mlflow
+  #   command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root  file:///mlruns
+  #   ports:
+  #     - "5000:5000"
+  #   volumes:
+  #     - ./mlflow:/mlflow-artifacts  # Artefatos do MLflow
+  #     - mlflow_db:/mlflow-db        # Volume para o SQLite
+  #     - ./mlruns:/mlruns
+  #   networks:
+  #     - back-tier
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri sqlite:///mlflow.db
+      --default-artifact-root ./mlruns
+    ports:
+      - "5000:5000"  # Expõe a porta para todas as interfaces do host
+    volumes:
+      - ./mlflow.db:/mlflow.db   # Volume para o SQLite
+      - ./mlruns:/mlruns         # Artefatos do MLflow
+    networks:
+      - back-tier
+
+  fastapi:
+    build: .  # Ou use image: se já tiver uma imagem
+    ports:
+      - "8000:8000"  # Expõe a porta do FastAPI
+    volumes:
+      # - ./app:/app   # Mapeia o código fonte (opcional)
+      # - ./scr:/app/scr  # Opcional: mapeia o código para desenvolvimento
+      - ./mlflow.db:/mlflow.db   # Volume para o SQLite
+      - ./mlruns:/mlruns         # Artefatos do MLflow
+    environment:
+      - PYTHONPATH=/app  # Garante que o Python encontra o módulo scr
+      - MLFLOW_TRACKING_URI=http://mlflow:5000  # Acessa o MLflow pelo nome do serviço
+    depends_on:
+      - mlflow
+    networks:
+      - back-tier

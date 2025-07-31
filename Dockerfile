@@ -2,13 +2,15 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
-COPY ./app ./app
-# COPY ./data ./data
-# COPY ./scr ./scr
-# COPY ./final_model ./final_model
+# COPY requirements.txt .
+COPY ./data ./data
+COPY ./scr ./scr
+COPY ./mlflow.db ./mlflow.db
+COPY ./mlruns ./mlruns
 
-RUN pip install fastapi uvicorn catboost pandas joblib
+RUN pip install fastapi uvicorn pandas joblib mlflow
+
+ENV PYTHONPATH=/app
 
 EXPOSE 8000
 
