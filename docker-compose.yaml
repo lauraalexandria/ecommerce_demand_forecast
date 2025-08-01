@@ -1,23 +1,12 @@
 volumes:
   mlflow_db: {}
+  prometheus_data: {}
 
 networks:
   front-tier:
   back-tier:
 
 services:
-
-  # mlflow:
-  #   image: ghcr.io/mlflow/mlflow
-  #   command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root  file:///mlruns
-  #   ports:
-  #     - "5000:5000"
-  #   volumes:
-  #     - ./mlflow:/mlflow-artifacts  # Artefatos do MLflow
-  #     - mlflow_db:/mlflow-db        # Volume para o SQLite
-  #     - ./mlruns:/mlruns
-  #   networks:
-  #     - back-tier
 
   mlflow:
     image: ghcr.io/mlflow/mlflow
@@ -51,3 +40,41 @@ services:
       - mlflow
     networks:
       - back-tier
+
+  monitoring_app:
+    build: ./scr/monitoring
+    ports:
+      - "3030:3030"
+    networks:
+      - back-tier
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    depends_on:
+      - monitoring_app
+    networks:
+      - back-tier
+
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - grafana-storage:/var/lib/grafana
+  #   depends_on:
+  #     - prometheus
+  #   networks:
+  #     - back-tier
+
+  # evidently:
+  #   build: .
+  #   ports:
+  #     - "3030:3030"
+  #   networks:
+  #     - back-tier

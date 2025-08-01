@@ -2,7 +2,6 @@ import logging
 
 import click
 import matplotlib.pyplot as plt
-import mlflow
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -10,6 +9,8 @@ from catboost import CatBoostRegressor
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.pyll import scope
 from sklearn.metrics import mean_squared_error
+
+import mlflow
 
 logging.basicConfig(
     level=logging.INFO,

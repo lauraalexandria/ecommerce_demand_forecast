@@ -23,6 +23,7 @@ The project includes:
 * Makefile - Plan to create and manage the project
 * Docker - Containerization
 * EvidentlyAI - ML observability framework
+* Prometheus
 * FastAPI
 * Pytest - Test framework
 
@@ -70,6 +71,7 @@ The project includes:
 - Makefile
 - Conda
 - Docker
+- Prometheus
 
 ### Setup project with Makefile
 

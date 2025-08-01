@@ -21,23 +21,23 @@ install:
 
 ## Extract Data
 extract-data:
-	$(PYTHON) scr/data_extractor.py
+	$(PYTHON) scr/model_pipeline/data_extractor.py
 
 ## Data Preparation
 prepare-data: # $(RAW_DATA)
-	$(PYTHON) scr/data_preparation.py
+	$(PYTHON) scr/model_pipeline/data_preparation.py
 
 ## Feature Engineering
 feat-eng: # $(RAW_DATA)
-	$(PYTHON) scr/feature_engineering.py
+	$(PYTHON) scr/model_pipeline/feature_engineering.py
 
 ## Create target ans split data
 target-split: # $(RAW_DATA)
-	$(PYTHON) scr/temporal_target_and_split.py --input-path $(PROCESSED_DATA) --target-col-source $(TARGET_COL_SOURCE) --horizon $(HORIZON) --split-data $(SPLIT_DATE)
+	$(PYTHON) scr/model_pipeline/temporal_target_and_split.py --input-path $(PROCESSED_DATA) --target-col-source $(TARGET_COL_SOURCE) --horizon $(HORIZON) --split-data $(SPLIT_DATE)
 
 ## Model tuning
 tune: # $(PROCESSED_DATA)
-	$(PYTHON) scr/catboost_optimization.py --split-data $(SPLIT_DATE)
+	$(PYTHON) scr/model_pipeline/catboost_optimization.py --split-data $(SPLIT_DATE)
 
 ## Final model
 #eda:
@@ -46,11 +46,15 @@ tune: # $(PROCESSED_DATA)
 
 ## Final model
 final-model:
-	$(PYTHON) scr/select_and_register_model.py
+	$(PYTHON) scr/model_pipeline/select_and_register_model.py
 
 ## Monitor
 monitor:
-	$(PYTHON) scr/monitor.py --current-date $(SPLIT_DATE)
+	$(PYTHON) scr/monitoring/monitor.py --current-date $(SPLIT_DATE)
+
+## Monitor
+monitor-test:
+	$(PYTHON) scr/monitoring/monitor_copy.py --current-date $(SPLIT_DATE)
 
 first-all-model-steps: extract-data prepare-data feat-eng target-split tune final-model
 all-model-steps: extract-data prepare-data feat-eng target-split tune final-model monitor

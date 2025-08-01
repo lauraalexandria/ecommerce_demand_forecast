@@ -1,6 +1,6 @@
 import pandas as pd
 
-from scr.data_preparation import aggregate_cols_by_dates
+from scr.model_pipeline.data_preparation import aggregate_cols_by_dates
 
 
 def test_prepare_data():
