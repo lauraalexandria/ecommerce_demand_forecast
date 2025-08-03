@@ -6,7 +6,7 @@ RAW_DATA = $(DATA_DIR)/raw/dataset.csv
 PROCESSED_DATA = $(DATA_DIR)/processed/model_data.csv
 TARGET_COL_SOURCE = "sales_amount_sum"
 HORIZON = 1
-SPLIT_DATE = "2018-05-15"
+SPLIT_DATE = "2018-05-08"
 
 # === COMANDS ===
 ## Create virtual environment
@@ -51,10 +51,6 @@ final-model:
 ## Monitor
 monitor:
 	$(PYTHON) scr/monitoring/monitor.py --current-date $(SPLIT_DATE)
-
-## Monitor
-monitor-test:
-	$(PYTHON) scr/monitoring/monitor_copy.py --current-date $(SPLIT_DATE)
 
 first-all-model-steps: extract-data prepare-data feat-eng target-split tune final-model
 all-model-steps: extract-data prepare-data feat-eng target-split tune final-model monitor

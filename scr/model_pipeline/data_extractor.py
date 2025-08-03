@@ -25,7 +25,7 @@ from dotenv import load_dotenv
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 # Load .env variables
-load_dotenv(dotenv_path="../.env")
+load_dotenv(dotenv_path="../../.env")
 
 # Authentication
 api = KaggleApi()

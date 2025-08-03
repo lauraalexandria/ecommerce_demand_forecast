@@ -22,8 +22,7 @@ The project includes:
 * MLFlow - Experiment tracker and model register
 * Makefile - Plan to create and manage the project
 * Docker - Containerization
-* EvidentlyAI - ML observability framework
-* Prometheus
+* EvidentlyAI/Grafana - ML observability framework
 * FastAPI
 * Pytest - Test framework
 
@@ -97,7 +96,24 @@ Create your own .env based on .env.example
 cp .env.example .env
 ```
 
-And change the default values to your needs. The Kaggle credentials can be view in "Settings" > Down until "API" > "Create New API Token" and the file kaggle.json will be downloaded with the credentials.
+And change the default values to your needs:
+1. The Kaggle credentials can be view in "Settings" > Down until "API" > "Create New API Token" and the file kaggle.json will be downloaded with the credentials;
+1. Define desired db name and postgree password;
+
+### Build Dockers
+
+```
+docker-compose down -v; docker-compose build; docker-compose up -d
+```
+
+#### Acess Points
+
+| Service         | URL                        | Credentials                                          |
+|-----------------|----------------------------|------------------------------------------------------|
+| MLflow UI       | http://localhost:5000      | -                                                    |
+| Adminer         | http://localhost:8080      |PostgreSQL/db/postgre/${POSTGRES_PASSWORD}/${DB_NAME} |
+| Grafana         | http://localhost:3000      | admin/admin                                          |
+| FastAPI         | http://localhost:8000/docs | -                                                    |
 
 ### Model
 
@@ -161,12 +177,6 @@ docker build -t ecommerce_forecast:latest .
 docker run -p 8080:8080 ecommerce_forecast:latest
 ```
 
-### Acess Points
-
-| Service         | URL                        | Credentials     |
-|-----------------|----------------------------|-----------------|
-| MLflow UI       | http://localhost:5000      | -               |
-| FastAPI         | http://localhost:8000/docs | -               |
 
 ### Deativate enviroment
 ```

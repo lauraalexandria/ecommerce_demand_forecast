@@ -1,5 +1,6 @@
 volumes:
   mlflow_db: {}
+  grafana_data: {}
   prometheus_data: {}
 
 networks:
@@ -17,12 +18,54 @@ services:
       --backend-store-uri sqlite:///mlflow.db
       --default-artifact-root ./mlruns
     ports:
-      - "5000:5000"  # Expõe a porta para todas as interfaces do host
+      - "5000:5000"
     volumes:
-      - ./mlflow.db:/mlflow.db   # Volume para o SQLite
-      - ./mlruns:/mlruns         # Artefatos do MLflow
+      - ./mlflow.db:/mlflow.db
+      - ./mlruns:/mlruns
     networks:
       - back-tier
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - back-tier
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    command: php -S 0.0.0.0:8080 /var/www/html/adminer.php
+    networks:
+      - back-tier
+      - front-tier
+    depends_on:
+      - db
+
+  grafana:
+    image: grafana/grafana-enterprise
+    # environment:
+    #   GF_DATABASE_HOST: db       # Nome do serviço do banco no compose
+    #   GF_DATABASE_USER: postgres # Usuário padrão do PostgreSQL
+    #   GF_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}  # Mesma senha definida no serviço do db
+    user: "472"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/config/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+      - ./grafana/config/grafana_dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+      - ./grafana/dashboards:/opt/grafana/dashboards
+    networks:
+      - back-tier
+      - front-tier
+    restart: always
+    depends_on:
+      - db
 
   fastapi:
     build: .  # Ou use image: se já tiver uma imagem
@@ -41,34 +84,23 @@ services:
     networks:
       - back-tier
 
-  monitoring_app:
-    build: ./scr/monitoring
-    ports:
-      - "3030:3030"
-    networks:
-      - back-tier
-
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9000:9000"
-    volumes:
-      - ./prometheus:/etc/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    depends_on:
-      - monitoring_app
-    networks:
-      - back-tier
-
-  # grafana:
-  #   image: grafana/grafana
+  # monitoring_app:
+  #   build: ./scr/monitoring
   #   ports:
-  #     - "3000:3000"
+  #     - "3030:3030"
+  #   networks:
+  #     - back-tier
+
+  # prometheus:
+  #   image: prom/prometheus
+  #   ports:
+  #     - "9000:9000"
   #   volumes:
-  #     - grafana-storage:/var/lib/grafana
+  #     - ./prometheus:/etc/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
   #   depends_on:
-  #     - prometheus
+  #     - monitoring_app
   #   networks:
   #     - back-tier
 
